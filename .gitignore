@@ -1,0 +1,13 @@
+# system files
+.htaccess
+.htpasswd
+/config
+/Capfile
+.DS_Store
+Thumbs.db
+sitemap.xml*
+.sass-cache
+config.rb
+
+# phpstorm files
+.idea/
