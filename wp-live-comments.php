@@ -5,7 +5,7 @@ Plugin URI: https://github.com/voceconnect/wp-live-comments/
 Description: Live commenting plugin implemented with Backbone.js
 Version: 1.0
 Author: Jeff Stieler
-Author URI: http://plugins.voceconnect.com
+Author URI: http://voceconnect.com
 License: GPL2
 */
 

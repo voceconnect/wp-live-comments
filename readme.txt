@@ -1,7 +1,7 @@
 === Plugin Name ===
 Contributors: jeffstieler
 Tags: comments, ajax, live, backbonejs, twentyeleven
-Requires at least: 3.0.1
+Requires at least: 3.4.2
 Tested up to: 3.4.2
 Stable tag: 1.0
 License: GPLv2 or later
