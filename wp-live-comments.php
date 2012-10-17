@@ -187,9 +187,11 @@ class WP_Live_Comments {
 	 */
 	function output_initialization_object() {
 		global $wp_query;
-
-		$since_id = max(array_map(function($a){return (int)$a->comment_ID;}, $wp_query->comments));
-
+		if(!empty($wp_query->comments)){
+			$since_id = max(array_map(function($a){return (int)$a->comment_ID;}, $wp_query->comments));
+		} else {
+			$since_id = 0;
+		}
 		wp_localize_script('wp-live-comments', 'wpLiveCommentsInit', array(
 			'post_id'  => $wp_query->queried_object_id,
 			'comments' => self::flesh_out_comment_objects($wp_query->comments),
