@@ -12,10 +12,50 @@
 				that.popup.hide(this);
 			});
 		};
+		
+		var _popup = function(opts){
+			var defaults = {
+				position: 'bottom-right',
+				timeout	: 1000
+			};
+			
+			var o = opts || {};
+		
+			this.o = jQuery.extend(defaults, o);
+			
+			// Create the wrapper div if not exists
+			var wrapper = jQuery("#wp-live-comments-popwrap-"+ this.o.position);
+			if( wrapper.length < 1 ) {
+				wrapper = document.createElement("div");
+				wrapper.id = 'wp-live-comments-popwrap';
+				wrapper.className = this.o.position;
+				jQuery('body').append(wrapper);
+			}
+			// Now create our popup div if it doesn't exist
+			this.popup = document.createElement("div");
+			this.popup.innerHTML = "<span class='close' id='close'>&times;</span>";
+			this.popup.innerHTML += "<div class='poptext'></div>";
+			this.popup.className = "popup";
+			this.popup.id = "wp-live-comments-popup";
+			// Add our popup to our wrapper
+			jQuery(wrapper).append(this.popup);
+		}
+		_popup.prototype = {
+			show: function(msg) {
+				// Replace all " with \"
+				msg = msg ? msg.replace('"','\"') : ' ';
+				this.popup.children[1].innerHTML = msg;
+				jQuery(this.popup).fadeIn(this.o.timeout)
+			},
+			// Hide the popup
+			hide: function() {
+				jQuery(this.popup).fadeOut(this.o.timeout)
+			}
+		};
 
 		notifications.prototype = {
 			constructor: notifications,
-			popup: new TINYPOP({position:'center',sticky:true})
+			popup: new _popup({position:'center',sticky:true})
 		};
 
 		return notifications;
@@ -169,6 +209,5 @@
 			setCommentFormError("There was an error processing your request.");
 		}
 	});
-
 
 })(jQuery, _, window.wpLiveCommentsInit || {});
