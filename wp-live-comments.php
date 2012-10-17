@@ -90,8 +90,9 @@ class WP_Live_Comments {
 		wp_enqueue_script('underscore', $dir . 'lib/underscore-min.js', array(), false, true);
 		wp_enqueue_script('backbone', $dir . 'lib/backbone-min.js', array('underscore', 'json2', 'jquery'), false, true);
 		wp_enqueue_script('moment', $dir . 'lib/moment.min.js', array(), false, true);
+		wp_enqueue_script('tinypop', $dir . 'lib/tinypop.min.js', array(), false, true);
 		wp_enqueue_script('wp-live-comments', $dir . 'wp-live-comments.min.js', array('backbone', 'jquery-form', 'moment'), false, true);
-
+		wp_enqueue_style('wp-live-comments', plugins_url('css/', __FILE__) . 'wp-live-comments.css', array(), false);
 		if (is_single()) {
 
 			add_action('wp_footer', array(__CLASS__, 'output_underscore_templates'));

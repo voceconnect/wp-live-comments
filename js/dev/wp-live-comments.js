@@ -4,6 +4,23 @@
 		post_id  = init.post_id  || 0,
 		since_id = init.since_id || 0;
 
+	var Notifications = (function () {
+	
+		var notifications = function () {
+			that = this;
+			jQuery('.popup .close').on('click', function(){
+				that.popup.hide(this);
+			});
+		};
+
+		notifications.prototype = {
+			constructor: notifications,
+			popup: new TINYPOP({position:'center',sticky:true})
+		};
+
+		return notifications;
+	}());
+
 	var Comment = Backbone.Model.extend({
 		idAttribute: "comment_ID"
 	});
@@ -52,9 +69,11 @@
 	var CommentCollectionView = Backbone.View.extend({
 		el: "#comments ol.commentlist",
 		_commentViews: [],
+		
 		initialize: function() {
 			this.collection.on("add", this.add, this);
 			this.collection.on("reset", this.reset, this);
+			this.notifications = new Notifications();
 		},
 		add: function(comment) {
 			var commentView = new CommentView({model: comment});
@@ -138,11 +157,11 @@
 			if ("undefined" === typeof(data.error)) {
 
 				theComments.add(data);
+				theCommentsCollectionView.notifications.popup.show("Comment Posted");
 				$commentForm.clearForm();
 				$("#cancel-comment-reply-link").click();
 
 			}
-
 			setCommentFormError(data.error || "");
 
 		},
@@ -150,5 +169,6 @@
 			setCommentFormError("There was an error processing your request.");
 		}
 	});
+
 
 })(jQuery, _, window.wpLiveCommentsInit || {});
