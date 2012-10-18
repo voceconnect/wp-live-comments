@@ -78,7 +78,6 @@ class WP_Live_Comments {
 			'error' => is_scalar($message) ? (string)$message : 'There was an error processing your request.'
 		);
 		die(json_encode($response));
-
 	}
 
 	/**

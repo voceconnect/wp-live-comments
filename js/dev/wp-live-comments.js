@@ -4,15 +4,18 @@
 		post_id  = init.post_id  || 0,
 		since_id = init.since_id || 0;
 
-	var Notifications = (function () {
+	/***
+	Create notification messages to display to users
 	
-		var notifications = function () {
-			that = this;
-			jQuery('.popup .close').on('click', function(){
-				that.popup.hide(this);
-			});
-		};
+	@module Notfications
+	***/
+	var Notifications = (function () {
 		
+		/***
+		Create an HTML popup element
+		
+		@submodule _popup
+		***/
 		var _popup = function(opts){
 			var defaults = {
 				position: 'bottom-right',
@@ -31,7 +34,7 @@
 				wrapper.className = this.o.position;
 				jQuery('body').append(wrapper);
 			}
-			// Now create our popup div if it doesn't exist
+			// Now create our popup div
 			this.popup = document.createElement("div");
 			this.popup.innerHTML = "<span class='close' id='close'>&times;</span>";
 			this.popup.innerHTML += "<div class='poptext'></div>";
@@ -40,6 +43,9 @@
 			// Add our popup to our wrapper
 			jQuery(wrapper).append(this.popup);
 		}
+		/***
+		Methods to interact with the popup 
+		***/
 		_popup.prototype = {
 			show: function(msg) {
 				// Replace all " with \"
@@ -47,10 +53,37 @@
 				this.popup.children[1].innerHTML = msg;
 				jQuery(this.popup).fadeIn(this.o.timeout)
 			},
-			// Hide the popup
 			hide: function() {
 				jQuery(this.popup).fadeOut(this.o.timeout)
 			}
+		};
+		
+		/***
+		Do something when an event happens
+		@param object e Event 
+		@param string eType Name of the event
+		***/
+		var _eventHandler = function(e, eType){
+			console.log(eType);
+		};
+		
+		/***
+		@constructor
+		***/
+		var notifications = function () {
+			that = this;
+			// Bind the close button to the close event
+			jQuery('#wp-live-comments-popwrap .close').on('click', function(){
+				that.popup.hide(this);
+			});
+			// Listen for our custom event
+			jQuery(window).on('wp-live-comments-event', function(e, eType){
+				_eventHandler(e, eType);
+			});
+			// Listen for Backbone event for model added to collection
+			theComments.on('add', function(e){
+				_eventHandler(e, 'comment added');
+			});
 		};
 
 		notifications.prototype = {
@@ -197,8 +230,8 @@
 			if ("undefined" === typeof(data.error)) {
 
 				theComments.add(data);
-				theCommentsCollectionView.notifications.popup.show("Comment Posted");
 				$commentForm.clearForm();
+				jQuery(window).trigger('wp-live-comments-event', 'reply form success');
 				$("#cancel-comment-reply-link").click();
 
 			}
@@ -207,6 +240,7 @@
 		},
 		error: function() {
 			setCommentFormError("There was an error processing your request.");
+			jQuery(window).trigger('wp-live-comments-event', 'reply form error');
 		}
 	});
 
